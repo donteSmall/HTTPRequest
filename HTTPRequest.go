@@ -56,7 +56,8 @@ func getResource(writer http.ResponseWriter, r *http.Request) {
 func createResource(writer http.ResponseWriter, r *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	var resource Resource
-	_ = json.NewDecoder(r.Body).Decode(&resources)
+	//request
+	_ = json.NewDecoder(r.Body).Decode(&resource)
 	resource.ID = strconv.Itoa(rand.Intn(1000000))
 	resources = append(resources, resource)
 	json.NewEncoder(writer).Encode(resource)
@@ -79,13 +80,15 @@ func main() {
 
 	// Routes consist of a path and a handler function.
 	//router.HandleFunc("/create/resources", RootEndpoint).Methods("GET")
-	router.HandleFunc("/create/resources", getResources).Methods("GET")
+	router.HandleFunc("/create", getResources).Methods("GET")
 
-	router.HandleFunc("/create/Resource/{id}", getResource).Methods("GET")
-	router.HandleFunc("/create/Resources", createResource).Methods("POST")
-	router.HandleFunc("/create/Resources/{id}", updateResources).Methods("PUT")
+	router.HandleFunc("/create/{id}", getResource).Methods("GET")
 
-	router.HandleFunc("/create/Resources/{id}", DeleteResources).Methods("Delete")
+	router.HandleFunc("/create", createResource).Methods("POST")
+
+	router.HandleFunc("/create/{id}", updateResources).Methods("PUT")
+
+	router.HandleFunc("/create/{id}", DeleteResources).Methods("Delete")
 
 	// Bind to a port and pass our router in, if it fail we'll throw an error
 	//Start servers
